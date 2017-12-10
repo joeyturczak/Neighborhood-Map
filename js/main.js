@@ -10,11 +10,11 @@ function initMap() {
   });
 
   // Get locations and then apply bindings to the viewmodel
-  var bounds = new google.maps.LatLngBounds();
   var placesService = new google.maps.places.PlacesService(map);
   placesService.textSearch({
     query: 'donuts',
-    bounds: bounds
+    location: map.getCenter(),
+    radius: 500
   }, function(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       createPlaces(results);
@@ -24,7 +24,6 @@ function initMap() {
   });
 
   function createPlaces(places) {
-    var bounds = new google.maps.LatLngBounds();
     for (var i = 0; i < places.length; i++) {
       var place = places[i];
       var marker = new google.maps.Marker({
@@ -36,8 +35,6 @@ function initMap() {
       markers.push(marker);
     }
   }
-
-
 }
 
 var dummyItems = [

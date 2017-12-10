@@ -68,6 +68,13 @@ a {
   right: 0px;
 }
 
+.title {
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  font-size: 2em;
+}
+
 .place-list {
   list-style: none;
 }

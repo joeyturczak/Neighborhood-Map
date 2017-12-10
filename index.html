@@ -7,6 +7,11 @@
   </head>
   <body>
     <aside class="list-box">
+      <ul class="place-list" data-bind="foreach: placeList">
+        <li class="place-item">
+          <span data-bind="text: name"></span>
+        </li>
+      </ul>
     </aside>
     <main id="map">
     </main>

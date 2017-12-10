@@ -1,28 +1,60 @@
 var map;
 
+var markers = [];
+
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 34.0538414, lng: -118.28356183},
     zoom: 13,
     mapTypeControl: false
   });
+
+  // Get locations and then apply bindings to the viewmodel
+  var bounds = new google.maps.LatLngBounds();
+  var placesService = new google.maps.places.PlacesService(map);
+  placesService.textSearch({
+    query: 'donuts',
+    bounds: bounds
+  }, function(results, status) {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      createPlaces(results);
+      ko.applyBindings(new ViewModel());
+      console.log(results);
+    }
+  });
+
+  function createPlaces(places) {
+    var bounds = new google.maps.LatLngBounds();
+    for (var i = 0; i < places.length; i++) {
+      var place = places[i];
+      var marker = new google.maps.Marker({
+        map: map,
+        title: place.name,
+        position: place.geometry.location,
+        id: place.id
+      });
+      markers.push(marker);
+    }
+  }
+
+
 }
 
 var dummyItems = [
   {
-    name: 'Place1'
+    title: 'Place1'
   },
   {
-    name: 'Place2'
+    title: 'Place2'
   },
   {
-    name: 'Place3'
+    title: 'Place3'
   },
   {
-    name: 'Place4'
+    title: 'Place4'
   },
   {
-    name: 'Place5'
+    title: 'Place5'
   }
 ]
 
@@ -31,13 +63,13 @@ var ViewModel = function() {
 
   this.placeList = ko.observableArray([]);
 
-  dummyItems.forEach(function(place) {
+  markers.forEach(function(place) {
     self.placeList.push(new Place(place));
   });
 }
 
 var Place = function(data) {
-  this.name = ko.observable(data.name);
+  this.title = ko.observable(data.title);
 }
 
-ko.applyBindings(new ViewModel());
+//ko.applyBindings(new ViewModel());

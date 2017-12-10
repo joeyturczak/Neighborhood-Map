@@ -1,5 +1,7 @@
 var map;
 
+var initialPlaces = [];
+
 var markers = [];
 
 function initMap() {
@@ -26,13 +28,7 @@ function initMap() {
   function createPlaces(places) {
     for (var i = 0; i < places.length; i++) {
       var place = places[i];
-      var marker = new google.maps.Marker({
-        map: map,
-        title: place.name,
-        position: place.geometry.location,
-        id: place.id
-      });
-      markers.push(marker);
+      initialPlaces.push(place);
     }
   }
 }
@@ -60,7 +56,7 @@ var ViewModel = function() {
 
   this.placeList = ko.observableArray([]);
 
-  markers.forEach(function(place) {
+  initialPlaces.forEach(function(place) {
     self.placeList.push(new Place(place));
   });
 
@@ -86,8 +82,18 @@ var ViewModel = function() {
   }
 }
 
-var Place = function(data) {
-  this.title = ko.observable(data.title);
+var Place = function(place) {
+  this.name = ko.observable(place.name);
+
+  // marker
+  var marker = new google.maps.Marker({
+    map: map,
+    title: place.name,
+    position: place.geometry.location,
+    id: place.id
+  });
+  // visibility
+  // hide/show
 }
 
 var Marker = function(data) {

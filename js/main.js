@@ -63,10 +63,35 @@ var ViewModel = function() {
   markers.forEach(function(place) {
     self.placeList.push(new Place(place));
   });
+
+  this.currentPlace = ko.observable(this.placeList()[0]);
+
+  this.changePlace = function(data, event) {
+    self.currentPlace(data);
+    self.toggleFocus(event.target);
+    console.log(data);
+  }
+
+  this.toggleFocus = function(element) {
+    var $enabled = $('.enabled');
+    $enabled.each(function() {
+      $(this).toggleClass('enabled');
+    });
+    var $element = $(element);
+    if(!$element.hasClass('enabled')) {
+      $element.addClass('enabled');
+    } else {
+      $element.removeClass('enabled');
+    }
+  }
 }
 
 var Place = function(data) {
   this.title = ko.observable(data.title);
+}
+
+var Marker = function(data) {
+
 }
 
 //ko.applyBindings(new ViewModel());

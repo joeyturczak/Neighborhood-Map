@@ -8,15 +8,16 @@
   <body>
     <aside class="list-box">
       <h1 class="title">Donut Shops</h1>
+      <hr>
       <ul class="place-list" data-bind="foreach: placeList">
-        <li class="place-item">
-          <span data-bind="text: title"></span>
+        <li class="place-item" data-bind="click: $parent.changePlace, text: title">
         </li>
       </ul>
     </aside>
     <main id="map">
     </main>
   </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src='js/knockout-3.4.2.js'></script>
   <script src="js/main.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs6Wbj7E3YiAy0kxH6m2XdYPJo4pgrdG8&libraries=places&v=3&callback=initMap"></script>

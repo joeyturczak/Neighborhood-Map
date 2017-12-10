@@ -63,23 +63,33 @@ a {
 #map {
   bottom: 0px;
   height: 100%;
-  left: 362px;
+  left: 340px;
   position: absolute;
   right: 0px;
 }
 
 .title {
   width: 100%;
-  padding: 10px;
+  padding-top: 20px;
   text-align: center;
   font-size: 2em;
 }
 
 .place-list {
   list-style: none;
+  padding: 0;
 }
 
 .place-item {
   font-size: 1.3em;
-  padding: 10px 0 10px 0;
+  padding: 10px 0 10px 20px;
+}
+
+.place-item:hover {
+  cursor: pointer;
+  background-color: red;
+}
+
+.enabled {
+  background-color: blue;
 }

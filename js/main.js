@@ -81,13 +81,31 @@ var ViewModel = function() {
     }
   }
 
-  // var $drawer = $('.mdc-permanent-drawer');
-  // var $map = $('#map');
-  // // var $toolbar = $('.mdc-toolbar');
-  // $drawer.height($map.height());
+  this.input = ko.observable('');
+
+  this.filteredPlaces = ko.computed(function() {
+    var filter = this.input().toLowerCase();
+    if (!filter) {
+        return this.placeList();
+    } else {
+        return ko.utils.arrayFilter(this.placeList(), function(place) {
+            return contains(place.name().toLowerCase(), filter);
+        });
+    }
+  }, this);
+
+  var contains = function(string, contains) {
+    string = string || "";
+    if (contains.length > string.length) {
+      return false;
+    }
+    return string.indexOf(contains) !== -1;
+  }
 }
 
 var Place = function(place) {
+  var self = this;
+
   this.name = ko.observable(place.name);
 
   // marker
@@ -97,11 +115,6 @@ var Place = function(place) {
     position: place.geometry.location,
     id: place.id
   });
-  // visibility
-  this.visible = ko.computed(function() {
-
-  });
-  // hide/show
 }
 
 var Marker = function(data) {

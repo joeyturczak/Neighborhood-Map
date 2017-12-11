@@ -18,52 +18,20 @@
     </style>
   </head>
   <body class="mdc-typography">
-    <!-- <div class="mdc-toolbar-fixed-adjust">
-      <header class="mdc-toolbar mdc-toolbar--fixed mdc-theme-primary">
-        <div class="mdc-toolbar__row">
-          <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
-            <span class="mdc-toolbar__title">Donut Shops</span>
-          </section>
-        </div>
-      </header>
-    </div> -->
     <nav class="mdc-permanent-drawer mdc-elevation--z4">
       <div class="mdc-permanent-drawer__toolbar-spacer">
-        <!-- <div class="mdc-text-field">
-          <input type="text" id="filter-text" class="mdc-text-field__input">
-          <label class="mdc-text-field__label" for="filter-text">Specify a donut shop</label>
-          <div class="mdc-text-field__bottom-line"></div>
-        </div> -->
-        <!-- <label for="filter-text">Filter results</label> -->
         <div class="mdc-text-field">
-          <input type="text" id="filter-text" class="mdc-text-field__input" placeholder="Specify a donut shop">
+          <input type="text" id="filter-text" class="mdc-text-field__input" placeholder="Specify a donut shop" data-bind="textInput: input">
           <div class="mdc-text-field__bottom-line"></div>
         </div>
       </div>
       <div class="mdc-list-group">
-        <!-- Display categories from database -->
-        <!-- <nav class="mdc-list"> -->
-          <!-- <h1 class="title">Donut Shops</h1> -->
-          <!-- <hr> -->
-          <!-- <input id="filter-text" type="text" placeholder="Specify a donut shop"> -->
-          <ul class="place-list mdc-list" data-bind="foreach: placeList">
-            <li class="place-item mdc-list-item" data-bind="click: $parent.changePlace, text: name">
-            </li>
-          </ul>
-        <!-- </nav> -->
+        <ul class="place-list mdc-list" data-bind="foreach: filteredPlaces">
+          <li class="place-item mdc-list-item" data-bind="click: $parent.changePlace, text: name">
+          </li>
+        </ul>
       </div>
     </nav>
-    <!--
-    <aside class="list-box">
-      <h1 class="title">Donut Shops</h1>
-      <hr>
-      <input id="filter-text" type="text" placeholder="Specify a donut shop">
-      <ul class="place-list" data-bind="foreach: placeList">
-        <li class="place-item" data-bind="click: $parent.changePlace, text: name">
-        </li>
-      </ul>
-    </aside>
-  -->
     <main class="mdc-theme--primary">
       <div class="mdc-permanent-drawer__content">
         <div id="map"></div>

@@ -128,12 +128,19 @@ var Place = function(place) {
 
 var Markers = {
   markers: [],
+  infoWindow: {},
   addMarker: function(place) {
     var marker = new google.maps.Marker({
       map: map,
       title: place.name,
       position: place.geometry.location,
       id: place.id
+    });
+    if($.isEmptyObject(Markers.infoWindow)) {
+      Markers.infoWindow = new google.maps.InfoWindow();
+    }
+    marker.addListener('click', function() {
+      Markers.showInfoWindow(marker);
     });
     Markers.markers.push(marker);
   },
@@ -145,7 +152,7 @@ var Markers = {
         break;
       }
     }
-    console.log(marker);
+    // console.log(marker);
     return marker;
   },
   showMarker: function(placeId) {
@@ -160,6 +167,10 @@ var Markers = {
   hideMarker: function(placeId) {
     var marker = Markers.getMarker(placeId);
     marker.setMap(null);
+  },
+  showInfoWindow: function(marker) {
+    Markers.infoWindow.marker = marker;
+    Markers.infoWindow.open(map, marker);
   }
 }
 

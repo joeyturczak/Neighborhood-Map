@@ -86,13 +86,27 @@ var ViewModel = function() {
   this.filteredPlaces = ko.computed(function() {
     var filter = this.input().toLowerCase();
     if (!filter) {
-        return this.placeList();
+      Markers.showAllMarkers();
+      return this.placeList();
     } else {
-        return ko.utils.arrayFilter(this.placeList(), function(place) {
-            return contains(place.name().toLowerCase(), filter);
-        });
+      return ko.utils.arrayFilter(this.placeList(), function(place) {
+        if(contains(place.name().toLowerCase(), filter)) {
+          // Show marker
+          Markers.showMarker(place.id());
+          return true;
+        } else {
+          // Hide marker
+          Markers.hideMarker(place.id());
+          return false;
+        }
+        return contains(place.name().toLowerCase(), filter);
+      });
     }
   }, this);
+
+  this.toggleMarker = function(place) {
+
+  }
 
   var contains = function(string, contains) {
     string = string || "";
@@ -107,18 +121,46 @@ var Place = function(place) {
   var self = this;
 
   this.name = ko.observable(place.name);
+  this.id = ko.observable(place.id);
 
-  // marker
-  var marker = new google.maps.Marker({
-    map: map,
-    title: place.name,
-    position: place.geometry.location,
-    id: place.id
-  });
+  Markers.addMarker(place);
 }
 
-var Marker = function(data) {
-
+var Markers = {
+  markers: [],
+  addMarker: function(place) {
+    var marker = new google.maps.Marker({
+      map: map,
+      title: place.name,
+      position: place.geometry.location,
+      id: place.id
+    });
+    Markers.markers.push(marker);
+  },
+  getMarker: function(placeId) {
+    var marker;
+    for (var i = 0; i < Markers.markers.length; i++) {
+      if(Markers.markers[i].id == placeId) {
+        marker = Markers.markers[i];
+        break;
+      }
+    }
+    console.log(marker);
+    return marker;
+  },
+  showMarker: function(placeId) {
+    var marker = Markers.getMarker(placeId);
+    marker.setMap(map);
+  },
+  showAllMarkers: function() {
+    for(var i = 0; i < Markers.markers.length; i++) {
+      Markers.showMarker(Markers.markers[i].id);
+    }
+  },
+  hideMarker: function(placeId) {
+    var marker = Markers.getMarker(placeId);
+    marker.setMap(null);
+  }
 }
 
 //ko.applyBindings(new ViewModel());

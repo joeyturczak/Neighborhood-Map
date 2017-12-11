@@ -69,17 +69,22 @@ var ViewModel = function() {
   }
 
   this.toggleFocus = function(element) {
-    var $enabled = $('.enabled');
+    var $enabled = $('.mdc-permanent-drawer--selected');
     $enabled.each(function() {
-      $(this).toggleClass('enabled');
+      $(this).toggleClass('mdc-permanent-drawer--selected');
     });
     var $element = $(element);
-    if(!$element.hasClass('enabled')) {
-      $element.addClass('enabled');
+    if(!$element.hasClass('mdc-permanent-drawer--selected')) {
+      $element.addClass('mdc-permanent-drawer--selected');
     } else {
-      $element.removeClass('enabled');
+      $element.removeClass('mdc-permanent-drawer--selected');
     }
   }
+
+  // var $drawer = $('.mdc-permanent-drawer');
+  // var $map = $('#map');
+  // // var $toolbar = $('.mdc-toolbar');
+  // $drawer.height($map.height());
 }
 
 var Place = function(place) {
@@ -93,6 +98,9 @@ var Place = function(place) {
     id: place.id
   });
   // visibility
+  this.visible = ko.computed(function() {
+
+  });
   // hide/show
 }
 

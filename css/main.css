@@ -54,30 +54,47 @@ a {
   text-decoration: none;
 }
 
-.list-box {
+/*.list-box {
+  box-sizing: border-box;
   height: 100%;
   width: 340px;
+  padding: 4px;
   text-align: left;
-}
+}*/
 
 #map {
   bottom: 0px;
   height: 100%;
-  left: 340px;
+  left: 240px;
   position: absolute;
   right: 0px;
 }
 
-.title {
+/*.title {
   width: 100%;
-  padding-top: 20px;
+  padding-top: 16px;
   text-align: center;
   font-size: 2em;
+}*/
+
+#filter-text {
+  /*box-sizing: border-box;*/
+  /*line-height: 30px;*/
+  font-size: 1.3em;
+  padding-top: 8px;
+  width: 100%;
 }
 
-.place-list {
+.mdc-permanent-drawer {
+  height: 100vh;
+  position: fixed;
+  overflow-y: scroll;
+}
+
+.place-list .mdc-list {
   list-style: none;
   padding: 0;
+  height: 100%;
 }
 
 .place-item {
@@ -87,7 +104,8 @@ a {
 
 .place-item:hover {
   cursor: pointer;
-  background-color: red;
+  background-color: #448aff;
+  color: #ff9800;
 }
 
 .enabled {

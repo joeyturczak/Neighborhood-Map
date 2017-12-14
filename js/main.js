@@ -11,6 +11,8 @@ function initMap() {
     mapTypeControl: false
   });
 
+  Markers.init();
+
   // Get locations and then apply bindings to the viewmodel
   var placesService = new google.maps.places.PlacesService(map);
   placesService.textSearch({
@@ -171,10 +173,18 @@ var Place = function(place) {
 var Markers = {
   markers: [],
   infoWindow: {},
+  defaultIcon: {},
+  highlightedIcon: {},
+  init: function() {
+    Markers.defaultIcon = Markers.makeMarkerIcon('ff9800');
+    Markers.highlightedIcon = Markers.makeMarkerIcon('448aff');
+  },
   addMarker: function(place) {
     var marker = new google.maps.Marker({
       map: map,
       title: place.name,
+      icon: Markers.defaultIcon,
+      animation: google.maps.Animation.DROP,
       position: place.geometry.location,
       id: place.id
     });
@@ -184,6 +194,12 @@ var Markers = {
     marker.addListener('click', function() {
       Markers.showInfoWindow(marker, place.id);
     });
+    // marker.addListener('mouseover', function() {
+    //   this.setIcon(Markers.highlightedIcon);
+    // });
+    // marker.addListener('mouseout', function() {
+    //   this.setIcon(Markers.defaultIcon);
+    // });
     Markers.markers.push(marker);
   },
   getMarker: function(placeId) {
@@ -209,17 +225,37 @@ var Markers = {
     var marker = Markers.getMarker(placeId);
     if(Markers.infoWindow.marker == marker) {
       Markers.infoWindow.close();
+      marker.setIcon(Markers.defaultIcon);
     }
     marker.setMap(null);
   },
   showInfoWindow: function(marker, placeId) {
     Markers.infoWindow.marker = marker;
     Markers.infoWindow.open(map, marker);
+    // marker.setIcon(Markers.highlightedIcon);
+    Markers.toggleHighlight(marker);
+    console.log(marker);
     viewModel.toggleFocus(viewModel.getPlaceById(placeId));
   },
   selectMarker: function(place) {
     var marker = Markers.getMarker(place.id());
     Markers.showInfoWindow(marker, place.id());
+  },
+  makeMarkerIcon: function(markerColor) {
+    var markerImage = new google.maps.MarkerImage(
+      'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor + '|40|_|%E2%80%A2',
+      new google.maps.Size(21, 34),
+      new google.maps.Point(0, 0),
+      new google.maps.Point(10, 34),
+      new google.maps.Size(21, 34)
+    );
+    return markerImage;
+  },
+  toggleHighlight: function(marker) {
+    for(var i = 0; i < Markers.markers.length; i++) {
+      Markers.markers[i].setIcon(Markers.defaultIcon);
+    }
+    marker.setIcon(Markers.highlightedIcon);
   }
 }
 

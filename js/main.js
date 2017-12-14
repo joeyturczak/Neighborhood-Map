@@ -2,7 +2,7 @@ var map;
 
 var initialPlaces = [];
 
-var markers = [];
+var viewModel;
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -20,8 +20,8 @@ function initMap() {
   }, function(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       createPlaces(results);
-      ko.applyBindings(new ViewModel());
-      console.log(results);
+      viewModel = new ViewModel();
+      ko.applyBindings(viewModel);
     }
   });
 
@@ -54,25 +54,59 @@ var dummyItems = [
 var ViewModel = function() {
   var self = this;
 
+  //https://stackoverflow.com/questions/10126812/knockout-js-get-dom-object-associated-with-data
+
+  ko.bindingHandlers.el = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+      var value = valueAccessor();
+      //assign value to observable (we specified in html)
+      value(element);
+    }
+  };
+
+  ko.bindingHandlers.$el = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+      var value = valueAccessor();
+      //here we first create a jQuery object by using $(myelem)
+      //before updating observable value
+      value($(element).first());
+    }
+  };
+
   this.placeList = ko.observableArray([]);
 
   initialPlaces.forEach(function(place) {
     self.placeList.push(new Place(place));
   });
 
-  this.currentPlace = ko.observable(this.placeList()[0]);
+  this.currentPlace = ko.observable({});
 
-  this.changePlace = function(data, event) {
-    self.currentPlace(data);
-    self.toggleFocus(event.target);
-    console.log(data);
+  this.changePlace = function(place) {
+    Markers.selectMarker(place);
   }
 
-  this.toggleFocus = function(element) {
+  this.getPlaceById = function(placeId) {
+    for(var i = 0; i < self.filteredPlaces().length; i++) {
+      if(self.filteredPlaces()[i].id() == placeId) {
+        return self.filteredPlaces()[i];
+      }
+    }
+  }
+
+  this.toggleFocus = function(place) {
+    self.currentPlace(place);
     var $enabled = $('.mdc-permanent-drawer--selected');
     $enabled.each(function() {
       $(this).toggleClass('mdc-permanent-drawer--selected');
     });
+    var element;
+    console.log(place);
+    for(var i = 0; i < self.filteredPlaces().length; i++) {
+      if(self.filteredPlaces()[i] == place) {
+        element = self.filteredPlaces()[i].el();
+        console.log(element);
+      }
+    }
     var $element = $(element);
     if(!$element.hasClass('mdc-permanent-drawer--selected')) {
       $element.addClass('mdc-permanent-drawer--selected');
@@ -82,6 +116,8 @@ var ViewModel = function() {
   }
 
   this.input = ko.observable('');
+
+  //http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html
 
   this.filteredPlaces = ko.computed(function() {
     var filter = this.input().toLowerCase();
@@ -108,6 +144,9 @@ var ViewModel = function() {
 
   }
 
+  // Inspired by
+  // https://stackoverflow.com/questions/30168480/ko-utils-stringstartswith-not-working
+
   var contains = function(string, contains) {
     string = string || "";
     if (contains.length > string.length) {
@@ -119,6 +158,9 @@ var ViewModel = function() {
 
 var Place = function(place) {
   var self = this;
+
+  self.el = ko.observable();
+  self.$el = ko.observable();
 
   this.name = ko.observable(place.name);
   this.id = ko.observable(place.id);
@@ -140,7 +182,7 @@ var Markers = {
       Markers.infoWindow = new google.maps.InfoWindow();
     }
     marker.addListener('click', function() {
-      Markers.showInfoWindow(marker);
+      Markers.showInfoWindow(marker, place.id);
     });
     Markers.markers.push(marker);
   },
@@ -152,7 +194,6 @@ var Markers = {
         break;
       }
     }
-    // console.log(marker);
     return marker;
   },
   showMarker: function(placeId) {
@@ -166,11 +207,19 @@ var Markers = {
   },
   hideMarker: function(placeId) {
     var marker = Markers.getMarker(placeId);
+    if(Markers.infoWindow.marker == marker) {
+      Markers.infoWindow.close();
+    }
     marker.setMap(null);
   },
-  showInfoWindow: function(marker) {
+  showInfoWindow: function(marker, placeId) {
     Markers.infoWindow.marker = marker;
     Markers.infoWindow.open(map, marker);
+    viewModel.toggleFocus(viewModel.getPlaceById(placeId));
+  },
+  selectMarker: function(place) {
+    var marker = Markers.getMarker(place.id());
+    Markers.showInfoWindow(marker, place.id());
   }
 }
 

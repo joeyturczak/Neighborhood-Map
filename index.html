@@ -27,7 +27,7 @@
       </div>
       <div class="mdc-list-group">
         <ul class="place-list mdc-list" data-bind="foreach: filteredPlaces">
-          <li class="place-item mdc-list-item" data-bind="click: $parent.changePlace, text: name">
+          <li class="place-item mdc-list-item" data-bind="click: $parent.changePlace, text: name, el: el, $el: $el">
           </li>
         </ul>
       </div>

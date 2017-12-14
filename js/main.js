@@ -231,8 +231,12 @@ var Markers = {
   },
   showInfoWindow: function(marker, placeId) {
     Markers.infoWindow.marker = marker;
+    Markers.infoWindow.setContent('<div>' + marker.title + '</div>');
     Markers.infoWindow.open(map, marker);
-    // marker.setIcon(Markers.highlightedIcon);
+    Markers.infoWindow.addListener('closeclick', function() {
+      marker.setIcon(Markers.defaultIcon);
+      viewModel.toggleFocus(null);
+    });
     Markers.toggleHighlight(marker);
     console.log(marker);
     viewModel.toggleFocus(viewModel.getPlaceById(placeId));

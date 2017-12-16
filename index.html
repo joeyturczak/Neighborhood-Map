@@ -18,24 +18,27 @@
     </style>
   </head>
   <body class="mdc-typography">
-    <nav class="mdc-permanent-drawer mdc-elevation--z4">
-      <div class="mdc-permanent-drawer__toolbar-spacer">
-        <div class="mdc-text-field">
-          <input type="text" id="filter-text" class="mdc-text-field__input" placeholder="Specify a donut shop" data-bind="textInput: input">
-          <div class="mdc-text-field__bottom-line"></div>
+    <div class="container">
+      <nav class="mdc-permanent-drawer mdc-elevation--z4">
+        <div class="mdc-permanent-drawer__toolbar-spacer">
+          <div class="mdc-text-field">
+            <input type="text" id="filter-text" class="mdc-text-field__input" placeholder="Specify a donut shop" data-bind="textInput: input">
+            <div class="mdc-text-field__bottom-line"></div>
+          </div>
         </div>
-      </div>
-      <div class="mdc-list-group">
-        <ul class="place-list mdc-list" data-bind="foreach: filteredPlaces">
-          <li class="place-item mdc-list-item" data-bind="click: $parent.changePlace, text: name, el: el, $el: $el">
-          </li>
-        </ul>
-      </div>
-    </nav>
-    <main class="mdc-theme--primary">
-      <div class="mdc-permanent-drawer__content">
-        <div id="map"></div>
-    </main>
+        <div class="mdc-list-group">
+          <ul class="place-list mdc-list" data-bind="foreach: filteredPlaces">
+            <li class="place-item mdc-list-item" data-bind="click: $parent.changePlace, text: name, el: el, $el: $el">
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <main class="mdc-theme--primary">
+        <!-- <div class="mdc-permanent-drawer__content"> -->
+          <div id="map"></div>
+        <!-- </div> -->
+      </main>
+    </div>
   </body>
   <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

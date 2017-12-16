@@ -111,3 +111,11 @@ a {
 .enabled {
   background-color: blue;
 }
+
+#tips {
+  max-width: 400px;
+}
+
+.infowindow-title {
+  padding-bottom: 10px;
+}

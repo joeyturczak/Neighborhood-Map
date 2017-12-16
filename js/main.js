@@ -166,6 +166,10 @@ var Place = function(place) {
 
   this.name = ko.observable(place.name);
   this.id = ko.observable(place.id);
+  this.lat = ko.observable(place.geometry.location.lat());
+  this.lng = ko.observable(place.geometry.location.lng());
+  console.log(this.lat());
+  console.log(place.name);
 
   Markers.addMarker(place);
 }
@@ -230,8 +234,10 @@ var Markers = {
     marker.setMap(null);
   },
   showInfoWindow: function(marker, placeId) {
+    console.log(viewModel.getPlaceById(placeId));
+    Markers.getFoursquareData(viewModel.getPlaceById(placeId));
     Markers.infoWindow.marker = marker;
-    Markers.infoWindow.setContent('<div>' + marker.title + '</div>');
+    Markers.infoWindow.setContent('<div class="mdc-typography--title infowindow-title">' + marker.title + '</div><div class="mdc-typography--subheading1">Tips from Foursquare:<ul id="tips"></div></div>');
     Markers.infoWindow.open(map, marker);
     Markers.infoWindow.addListener('closeclick', function() {
       marker.setIcon(Markers.defaultIcon);
@@ -248,10 +254,10 @@ var Markers = {
   makeMarkerIcon: function(markerColor) {
     var markerImage = new google.maps.MarkerImage(
       'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor + '|40|_|%E2%80%A2',
-      new google.maps.Size(21, 34),
-      new google.maps.Point(0, 0),
-      new google.maps.Point(10, 34),
-      new google.maps.Size(21, 34)
+      null,
+      null,
+      null,
+      new google.maps.Size(28, 50)
     );
     return markerImage;
   },
@@ -260,6 +266,58 @@ var Markers = {
       Markers.markers[i].setIcon(Markers.defaultIcon);
     }
     marker.setIcon(Markers.highlightedIcon);
+  },
+  getFoursquareData: function(place) {
+    var client_id = '5JWL2A0UG5CEPEIOJMOO3WEFBSMHXYQEHZJ0TDCHBJUHWB4A';
+    var client_secret = 'WORV3DYKGTA13JERVWNWJSXSFWTPKMW0GSUNUGBYENASPGM0';
+
+    $.ajax({
+      url: 'https://api.foursquare.com/v2/venues/search',
+      dataType: 'json',
+      data: 'v=20161016&limit=1&ll='+place.lat()+','+place.lng()+'&query='+place.name()+'&client_id='+client_id+'&client_secret='+client_secret+'',
+      async: true,
+      success: function(data) {
+        // getVenues(data);
+        // showVenues(data);
+        var venue_id = data.response.venues['0'].id;
+        $('.infowindow-title').html('<a href="http://foursquare.com/v/' + venue_id + '">' + place.name() + '</a>');
+        $.ajax({
+          url: 'https://api.foursquare.com/v2/venues/'+venue_id+'/tips',
+          dataType: 'json',
+          data: 'v=20161016&limit=3&client_id='+client_id+'&client_secret='+client_secret+'',
+          async: true,
+          success: function(data) {
+            // Save 3 tips and display them in infoWindow
+            showVenues(data);
+            var tips = [];
+            var count = data.response.tips.count > 3 ? 3 : data.response.tips.count;
+            if(count) {
+              for (var i = 0; i < count; i++) {
+                tips.push(data.response.tips.items[i]);
+              }
+            }
+            addTipsToInfoWindow(tips);
+          }
+        });
+      }
+    });
+
+    function showVenues(data) {
+      console.log(data);
+    }
+
+    function addTipsToInfoWindow(tips) {
+      console.log(tips);
+      var $tipElem = $('#tips');
+      if(tips.length > 0) {
+        for(var i = 0; i < tips.length; i++) {
+          $tipElem.append('<li class="mdc-typography--body2">' + tips[i].text) + '</li>';
+        }
+      } else {
+        $tipElem.html("No tips to display");
+      }
+      $tipElem.after('<img src="img/powered-by-foursquare.png" alt="Foursquare logo">')
+    }
   }
 }
 

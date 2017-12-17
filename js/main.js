@@ -4,24 +4,24 @@ var initialPlaces = [];
 
 var viewModel;
 
-//https://stackoverflow.com/questions/14687237/google-maps-api-async-loading
+// Set timeout for connection to goole apis.
+// https://stackoverflow.com/questions/14687237/google-maps-api-async-loading
 setTimeout(function() {
   if(!window.google || !window.google.maps) {
-    //handle script not loaded
-    console.log('authFailure');
     alert('There was a problem loading the page. Please check your connection and try again.');
     $('#progress-bar').hide();
   }
 }, 3000);
 
+// Initialize a map and add markers to places we are interested in.
 function initMap() {
-  // $('.mdc-permanent-drawer').hide();
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 34.0538414, lng: -118.28356183},
     zoom: 13,
     mapTypeControl: false
   });
 
+  // Initialize Markers object
   Markers.init();
 
   // Get locations and then apply bindings to the viewmodel
@@ -35,11 +35,14 @@ function initMap() {
       createPlaces(results);
       viewModel = new ViewModel();
       ko.applyBindings(viewModel);
+      // Display the list of places
       $('.mdc-permanent-drawer').show();
+      // Hide the progress bar
       $('#progress-bar').hide();
     }
   });
 
+  // Add places to viewmodel
   function createPlaces(places) {
     for (var i = 0; i < places.length; i++) {
       var place = places[i];
@@ -48,58 +51,41 @@ function initMap() {
   }
 }
 
-var dummyItems = [
-  {
-    title: 'Place1'
-  },
-  {
-    title: 'Place2'
-  },
-  {
-    title: 'Place3'
-  },
-  {
-    title: 'Place4'
-  },
-  {
-    title: 'Place5'
-  }
-]
-
 var ViewModel = function() {
   var self = this;
 
-  //https://stackoverflow.com/questions/10126812/knockout-js-get-dom-object-associated-with-data
-
+  // Create bindingHandlers to keep track of list item elements
+  // https://stackoverflow.com/questions/10126812/knockout-js-get-dom-object-associated-with-data
   ko.bindingHandlers.el = {
     init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
       var value = valueAccessor();
-      //assign value to observable (we specified in html)
       value(element);
     }
   };
-
+  // jQuery object version
   ko.bindingHandlers.$el = {
     init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
       var value = valueAccessor();
-      //here we first create a jQuery object by using $(myelem)
-      //before updating observable value
       value($(element).first());
     }
   };
 
+  // Create ko.observable for each place.
   this.placeList = ko.observableArray([]);
 
   initialPlaces.forEach(function(place) {
     self.placeList.push(new Place(place));
   });
 
+  // Keep track of the selected place.
   this.currentPlace = ko.observable({});
 
+  // List item callback to change current place and update the selected marker.
   this.changePlace = function(place) {
     Markers.selectMarker(place);
   }
 
+  // Returns place object with provided placeId.
   this.getPlaceById = function(placeId) {
     for(var i = 0; i < self.filteredPlaces().length; i++) {
       if(self.filteredPlaces()[i].id() == placeId) {
@@ -108,6 +94,7 @@ var ViewModel = function() {
     }
   }
 
+  // Toggle selected list item
   this.toggleFocus = function(place) {
     self.currentPlace(place);
     var $enabled = $('.mdc-permanent-drawer--selected');
@@ -115,11 +102,9 @@ var ViewModel = function() {
       $(this).toggleClass('mdc-permanent-drawer--selected');
     });
     var element;
-    console.log(place);
     for(var i = 0; i < self.filteredPlaces().length; i++) {
       if(self.filteredPlaces()[i] == place) {
         element = self.filteredPlaces()[i].el();
-        console.log(element);
       }
     }
     var $element = $(element);
@@ -132,10 +117,11 @@ var ViewModel = function() {
 
   this.input = ko.observable('');
 
-  //http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html
-
+  // Filter places list by filter input
+  // http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html
   this.filteredPlaces = ko.computed(function() {
     var filter = this.input().toLowerCase();
+    // If there is no input, then show all markers
     if (!filter) {
       Markers.showAllMarkers();
       return this.placeList();
@@ -155,13 +141,8 @@ var ViewModel = function() {
     }
   }, this);
 
-  this.toggleMarker = function(place) {
-
-  }
-
-  // Inspired by
-  // https://stackoverflow.com/questions/30168480/ko-utils-stringstartswith-not-working
-
+  // Returns true if "string" contains "contains"
+  // Inspired by https://stackoverflow.com/questions/30168480/ko-utils-stringstartswith-not-working
   var contains = function(string, contains) {
     string = string || "";
     if (contains.length > string.length) {
@@ -171,6 +152,7 @@ var ViewModel = function() {
   }
 }
 
+// Stores place data from google places api
 var Place = function(place) {
   var self = this;
 
@@ -181,12 +163,12 @@ var Place = function(place) {
   this.id = ko.observable(place.id);
   this.lat = ko.observable(place.geometry.location.lat());
   this.lng = ko.observable(place.geometry.location.lng());
-  // console.log(this.lat());
-  // console.log(place.name);
 
+  // Create a marker for the place
   Markers.addMarker(place);
 }
 
+// Markers object
 var Markers = {
   markers: [],
   infoWindow: {},
@@ -196,6 +178,7 @@ var Markers = {
     Markers.defaultIcon = Markers.makeMarkerIcon('ff9800');
     Markers.highlightedIcon = Markers.makeMarkerIcon('448aff');
   },
+  // Add a marker to the map
   addMarker: function(place) {
     var marker = new google.maps.Marker({
       map: map,
@@ -211,14 +194,9 @@ var Markers = {
     marker.addListener('click', function() {
       Markers.showInfoWindow(marker, place.id);
     });
-    // marker.addListener('mouseover', function() {
-    //   this.setIcon(Markers.highlightedIcon);
-    // });
-    // marker.addListener('mouseout', function() {
-    //   this.setIcon(Markers.defaultIcon);
-    // });
     Markers.markers.push(marker);
   },
+  // Returns marker with provided placeId
   getMarker: function(placeId) {
     var marker;
     for (var i = 0; i < Markers.markers.length; i++) {
@@ -229,15 +207,18 @@ var Markers = {
     }
     return marker;
   },
+  // Displays marker with provided placeId
   showMarker: function(placeId) {
     var marker = Markers.getMarker(placeId);
     marker.setMap(map);
   },
+  // Displays all markers
   showAllMarkers: function() {
     for(var i = 0; i < Markers.markers.length; i++) {
       Markers.showMarker(Markers.markers[i].id);
     }
   },
+  // Hides marker with provided placeId
   hideMarker: function(placeId) {
     var marker = Markers.getMarker(placeId);
     if(Markers.infoWindow.marker == marker) {
@@ -246,24 +227,28 @@ var Markers = {
     }
     marker.setMap(null);
   },
+  // Display infoWindow on selected marker
   showInfoWindow: function(marker, placeId) {
-    // console.log(viewModel.getPlaceById(placeId));
     Markers.getFoursquareData(viewModel.getPlaceById(placeId));
     Markers.infoWindow.marker = marker;
-    Markers.infoWindow.setContent('<article class="infowindow"><div class="mdc-typography--title infowindow-title">' + marker.title + '</div><div class="mdc-typography--subheading1">Tips from Foursquare:<ul id="tips"></div></div></article>');
+    Markers.infoWindow.setContent('<article class="infowindow">' +
+                                  '<div class="mdc-typography--title infowindow-title">' +
+                                  marker.title + '</div><div class="mdc-typography--subheading1">' +
+                                  'Tips from Foursquare:<ul id="tips"></div></div></article>');
     Markers.infoWindow.open(map, marker);
     Markers.infoWindow.addListener('closeclick', function() {
       marker.setIcon(Markers.defaultIcon);
       viewModel.toggleFocus(null);
     });
     Markers.toggleHighlight(marker);
-    console.log(marker);
     viewModel.toggleFocus(viewModel.getPlaceById(placeId));
   },
+  // Select "place" marker
   selectMarker: function(place) {
     var marker = Markers.getMarker(place.id());
     Markers.showInfoWindow(marker, place.id());
   },
+  // Create marker icon
   makeMarkerIcon: function(markerColor) {
     var markerImage = new google.maps.MarkerImage(
       'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor + '|40|_|%E2%80%A2',
@@ -274,34 +259,35 @@ var Markers = {
     );
     return markerImage;
   },
+  // Highlight selected marker
   toggleHighlight: function(marker) {
     for(var i = 0; i < Markers.markers.length; i++) {
       Markers.markers[i].setIcon(Markers.defaultIcon);
     }
     marker.setIcon(Markers.highlightedIcon);
   },
+  // Get tips from Foursquare
   getFoursquareData: function(place) {
     var client_id = '5JWL2A0UG5CEPEIOJMOO3WEFBSMHXYQEHZJ0TDCHBJUHWB4A';
     var client_secret = 'WORV3DYKGTA13JERVWNWJSXSFWTPKMW0GSUNUGBYENASPGM0';
 
+    // Get venue id
     $.ajax({
       url: 'https://api.foursquare.com/v2/venues/search',
       dataType: 'json',
-      data: 'v=20161016&limit=1&ll='+place.lat()+','+place.lng()+'&query='+place.name()+'&client_id='+client_id+'&client_secret='+client_secret+'',
+      data: 'v=20161016&limit=1&ll=' + place.lat() + ',' + place.lng() + '&query=' +
+            place.name() + '&client_id=' + client_id + '&client_secret=' + client_secret + '',
       async: true,
       success: function(data) {
-        // getVenues(data);
-        // showVenues(data);
         var venue_id = data.response.venues['0'].id;
         $('.infowindow-title').html('<a href="http://foursquare.com/v/' + venue_id + '">' + place.name() + '</a>');
         $.ajax({
-          url: 'https://api.foursquare.com/v2/venues/'+venue_id+'/tips',
+          url: 'https://api.foursquare.com/v2/venues/' + venue_id + '/tips',
           dataType: 'json',
-          data: 'v=20161016&limit=3&client_id='+client_id+'&client_secret='+client_secret+'',
+          data: 'v=20161016&limit=3&client_id=' + client_id + '&client_secret=' + client_secret + '',
           async: true,
           success: function(data) {
             // Save 3 tips and display them in infoWindow
-            showVenues(data);
             var tips = [];
             var count = data.response.tips.count > 3 ? 3 : data.response.tips.count;
             if(count) {
@@ -312,27 +298,20 @@ var Markers = {
             addTipsToInfoWindow(tips);
           },
           error: function() {
-            console.log('tipsError');
             foursquareError();
           }
         });
       },
       error: function() {
-        console.log('ajaxError');
         foursquareError();
       }
     });
-
-    function showVenues(data) {
-      console.log(data);
-    }
 
     function foursquareError() {
       $('#tips').html('Failed to connect to Foursquare');
     }
 
     function addTipsToInfoWindow(tips) {
-      console.log(tips);
       var $tipElem = $('#tips');
       if(tips.length > 0) {
         for(var i = 0; i < tips.length; i++) {
@@ -346,12 +325,10 @@ var Markers = {
   }
 }
 
-//https://codepen.io/alexgill/pen/NqjMma
+// Re-center the map if screen is resized
+// https://codepen.io/alexgill/pen/NqjMma
 window.onresize = function() {
   var currCenter = map.getCenter();
   google.maps.event.trigger(map, 'resize');
   map.setCenter(currCenter);
-  console.log('resize');
 };
-
-//ko.applyBindings(new ViewModel());

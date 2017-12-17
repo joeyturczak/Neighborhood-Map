@@ -1,46 +1,8 @@
 @media screen and (max-width: 650px) {
-  .container {
-    width: 100%;
-    height: 100%;
-    display: grid;
-    grid-template-columns: auto;
-    grid-template-rows: 60% 40%;
-  }
 
-  .mdc-permanent-drawer {
-    height: 100%;
-    width: 100%;
-    grid-row-start: 2;
-    grid-row-end: 2;
-    /* position: fixed; */
-    overflow-y: scroll;
-  }
+  /* Typography */
 
-  /* Create media query in javascript that will reload
-  the map on change.
-
-  /* .map {
-
-    height: 100%;
-  } */
-
-  #map {
-    grid-row-start: 1;
-    grid-row-end: 1;
-    height: 60%;
-    width: 100%;
-    left: 0;
-    top: 0;
-    position: absolute;
-    bottom: 40%;
-  }
-
-  #tips {
-    max-width: 180px;
-    font-size: .8em;
-  }
-
-  .mdc-typography--title {
+  .mdc-typography--body2 {
     font-size: 1em;
   }
 
@@ -48,21 +10,44 @@
     font-size: .9em;
   }
 
-  .mdc-typography--body2 {
+  .mdc-typography--title {
     font-size: 1em;
   }
+
+  /* Content */
 
   .infowindow {
     max-height: 200px;
   }
 
+  #map {
+    bottom: 40%;
+    grid-row-end: 1;
+    grid-row-start: 1;
+    height: 60%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  .mdc-permanent-drawer {
+    grid-row-end: 2;
+    grid-row-start: 2;
+    height: 100%;
+    width: 100%;
+  }
+
+  #tips {
+    font-size: .8em;
+    max-width: 180px;
+  }
 }
 
 @media screen and (min-width: 651px) {
-  .mdc-permanent-drawer {
-    height: 100vh;
-    position: fixed;
-    overflow-y: scroll;
+
+  .infowindow {
+    max-height: 300px;
   }
 
   #map {
@@ -73,12 +58,13 @@
     right: 0px;
   }
 
-  #tips {
-    max-width: 400px;
+  .mdc-permanent-drawer {
+    height: 100vh;
+    position: fixed;
   }
 
-  .infowindow {
-    max-height: 300px;
+  #tips {
+    max-width: 400px;
   }
 }
 
@@ -88,7 +74,6 @@ body,
 html {
   height: 100%;
   margin: 0 auto;
-  /*max-width: 1050px;*/
   padding: 0;
   width: 100%;
 }
@@ -138,37 +123,37 @@ a {
   text-decoration: none;
 }
 
-/*.list-box {
-  box-sizing: border-box;
+/* Content */
+
+.container {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 60% 40%;
   height: 100%;
-  width: 340px;
-  padding: 4px;
-  text-align: left;
-}*/
-
-
-
-/*.title {
   width: 100%;
-  padding-top: 16px;
-  text-align: center;
-  font-size: 2em;
-}*/
+}
+
+.enabled {
+  background-color: blue;
+}
 
 #filter-text {
-  /*box-sizing: border-box;*/
-  /*line-height: 30px;*/
   font-size: 1.3em;
   padding-top: 8px;
   width: 100%;
 }
 
+.foursquare-logo {
+  width: 200px;
+}
 
+.infowindow-title {
+  padding-bottom: 10px;
+}
 
-.place-list .mdc-list {
-  list-style: none;
-  padding: 0;
-  height: 100%;
+.mdc-permanent-drawer {
+  display: none;
+  overflow-y: scroll;
 }
 
 .place-item {
@@ -177,23 +162,13 @@ a {
 }
 
 .place-item:hover {
-  cursor: pointer;
   background-color: #448aff;
   color: #ff9800;
+  cursor: pointer;
 }
 
-.enabled {
-  background-color: blue;
-}
-
-.infowindow-title {
-  padding-bottom: 10px;
-}
-
-.foursquare-logo {
-  width: 200px;
-}
-
-.mdc-permanent-drawer {
-  display: none;
+.place-list .mdc-list {
+  height: 100%;
+  list-style: none;
+  padding: 0;
 }

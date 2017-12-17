@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
     <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
     <link rel="stylesheet" href="css/main.css">
+    <!-- Theme -->
     <style>
       :root {
         --mdc-theme-primary: #ff9800;
@@ -18,6 +19,7 @@
     </style>
   </head>
   <body class="mdc-typography">
+    <!-- Progress bar -->
     <figure id="progress-bar">
       <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate">
         <div class="mdc-linear-progress__buffering-dots"></div>
@@ -31,6 +33,7 @@
       </div>
     </figure>
     <div class="container">
+      <!-- Places list -->
       <nav class="mdc-permanent-drawer mdc-elevation--z4">
         <div class="mdc-permanent-drawer__toolbar-spacer">
           <div class="mdc-text-field">
@@ -45,10 +48,9 @@
           </ul>
         </div>
       </nav>
+      <!-- Map -->
       <main class="mdc-theme--primary">
-        <!-- <div class="mdc-permanent-drawer__content"> -->
-          <div id="map"></div>
-        <!-- </div> -->
+        <div id="map"></div>
       </main>
     </div>
   </body>
@@ -57,5 +59,4 @@
   <script src='js/knockout-3.4.2.js'></script>
   <script src="js/main.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs6Wbj7E3YiAy0kxH6m2XdYPJo4pgrdG8&libraries=places&v=3&callback=initMap"></script>
-
 </html>

@@ -4,7 +4,7 @@
     height: 100%;
     display: grid;
     grid-template-columns: auto;
-    grid-template-rows: 50% 50%;
+    grid-template-rows: 60% 40%;
   }
 
   .mdc-permanent-drawer {
@@ -16,6 +16,9 @@
     overflow-y: scroll;
   }
 
+  /* Create media query in javascript that will reload
+  the map on change.
+
   /* .map {
 
     height: 100%;
@@ -24,12 +27,35 @@
   #map {
     grid-row-start: 1;
     grid-row-end: 1;
-    height: 100%;
+    height: 60%;
     width: 100%;
     left: 0;
     top: 0;
-    bottom: 50%;
+    position: absolute;
+    bottom: 40%;
   }
+
+  #tips {
+    max-width: 180px;
+    font-size: .8em;
+  }
+
+  .mdc-typography--title {
+    font-size: 1em;
+  }
+
+  .mdc-typography--subheading1 {
+    font-size: .9em;
+  }
+
+  .mdc-typography--body2 {
+    font-size: 1em;
+  }
+
+  .infowindow {
+    max-height: 200px;
+  }
+
 }
 
 @media screen and (min-width: 651px) {
@@ -45,6 +71,14 @@
     left: 240px;
     position: absolute;
     right: 0px;
+  }
+
+  #tips {
+    max-width: 400px;
+  }
+
+  .infowindow {
+    max-height: 400px;
   }
 }
 
@@ -152,10 +186,10 @@ a {
   background-color: blue;
 }
 
-#tips {
-  max-width: 400px;
-}
-
 .infowindow-title {
   padding-bottom: 10px;
+}
+
+.foursquare-logo {
+  width: 200px;
 }

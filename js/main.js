@@ -168,8 +168,8 @@ var Place = function(place) {
   this.id = ko.observable(place.id);
   this.lat = ko.observable(place.geometry.location.lat());
   this.lng = ko.observable(place.geometry.location.lng());
-  console.log(this.lat());
-  console.log(place.name);
+  // console.log(this.lat());
+  // console.log(place.name);
 
   Markers.addMarker(place);
 }
@@ -234,10 +234,10 @@ var Markers = {
     marker.setMap(null);
   },
   showInfoWindow: function(marker, placeId) {
-    console.log(viewModel.getPlaceById(placeId));
+    // console.log(viewModel.getPlaceById(placeId));
     Markers.getFoursquareData(viewModel.getPlaceById(placeId));
     Markers.infoWindow.marker = marker;
-    Markers.infoWindow.setContent('<div class="mdc-typography--title infowindow-title">' + marker.title + '</div><div class="mdc-typography--subheading1">Tips from Foursquare:<ul id="tips"></div></div>');
+    Markers.infoWindow.setContent('<article class="infowindow"><div class="mdc-typography--title infowindow-title">' + marker.title + '</div><div class="mdc-typography--subheading1">Tips from Foursquare:<ul id="tips"></div></div></article>');
     Markers.infoWindow.open(map, marker);
     Markers.infoWindow.addListener('closeclick', function() {
       marker.setIcon(Markers.defaultIcon);
@@ -316,9 +316,17 @@ var Markers = {
       } else {
         $tipElem.html("No tips to display");
       }
-      $tipElem.after('<img src="img/powered-by-foursquare.png" alt="Foursquare logo">')
+      $tipElem.after('<img class="foursquare-logo" src="img/powered-by-foursquare.png" alt="Foursquare logo">')
     }
   }
 }
+
+//https://codepen.io/alexgill/pen/NqjMma
+window.onresize = function() {
+  var currCenter = map.getCenter();
+  google.maps.event.trigger(map, 'resize');
+  map.setCenter(currCenter);
+  console.log('resize');
+};
 
 //ko.applyBindings(new ViewModel());

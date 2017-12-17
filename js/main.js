@@ -4,7 +4,7 @@ var initialPlaces = [];
 
 var viewModel;
 
-// Set timeout for connection to goole apis.
+// Set timeout for connection to google apis.
 // https://stackoverflow.com/questions/14687237/google-maps-api-async-loading
 setTimeout(function() {
   if(!window.google || !window.google.maps) {
@@ -14,6 +14,7 @@ setTimeout(function() {
 }, 3000);
 
 // Initialize a map and add markers to places we are interested in.
+// Much of the google maps api code is borrowed from Udacity's Google Maps APIs course
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 34.0538414, lng: -118.28356183},

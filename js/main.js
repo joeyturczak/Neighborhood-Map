@@ -4,20 +4,18 @@ var initialPlaces = [];
 
 var viewModel;
 
-function gm_authFailure() {
-  console.log('authFailure');
-}
-
 //https://stackoverflow.com/questions/14687237/google-maps-api-async-loading
 setTimeout(function() {
   if(!window.google || !window.google.maps) {
     //handle script not loaded
     console.log('authFailure');
-    alert('There was a problem loading the map. Please check your connection and try again.');
+    alert('There was a problem loading the page. Please check your connection and try again.');
+    $('#progress-bar').hide();
   }
-}, 4000);
+}, 3000);
 
 function initMap() {
+  // $('.mdc-permanent-drawer').hide();
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 34.0538414, lng: -118.28356183},
     zoom: 13,
@@ -37,6 +35,8 @@ function initMap() {
       createPlaces(results);
       viewModel = new ViewModel();
       ko.applyBindings(viewModel);
+      $('.mdc-permanent-drawer').show();
+      $('#progress-bar').hide();
     }
   });
 

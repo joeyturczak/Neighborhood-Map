@@ -193,3 +193,7 @@ a {
 .foursquare-logo {
   width: 200px;
 }
+
+.mdc-permanent-drawer {
+  display: none;
+}

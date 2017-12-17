@@ -4,6 +4,19 @@ var initialPlaces = [];
 
 var viewModel;
 
+function gm_authFailure() {
+  console.log('authFailure');
+}
+
+//https://stackoverflow.com/questions/14687237/google-maps-api-async-loading
+setTimeout(function() {
+  if(!window.google || !window.google.maps) {
+    //handle script not loaded
+    console.log('authFailure');
+    alert('There was a problem loading the map. Please check your connection and try again.');
+  }
+}, 4000);
+
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 34.0538414, lng: -118.28356183},
@@ -297,13 +310,25 @@ var Markers = {
               }
             }
             addTipsToInfoWindow(tips);
+          },
+          error: function() {
+            console.log('tipsError');
+            foursquareError();
           }
         });
+      },
+      error: function() {
+        console.log('ajaxError');
+        foursquareError();
       }
     });
 
     function showVenues(data) {
       console.log(data);
+    }
+
+    function foursquareError() {
+      $('#tips').html('Failed to connect to Foursquare');
     }
 
     function addTipsToInfoWindow(tips) {

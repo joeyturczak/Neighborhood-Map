@@ -4,14 +4,10 @@ var initialPlaces = [];
 
 var viewModel;
 
-// Set timeout for connection to google apis.
-// https://stackoverflow.com/questions/14687237/google-maps-api-async-loading
-setTimeout(function() {
-  if(!window.google || !window.google.maps) {
-    alert('There was a problem loading the page. Please check your connection and try again.');
-    $('#progress-bar').hide();
-  }
-}, 3000);
+function mapsError() {
+  alert('There was a problem loading the page. Please check your connection and try again.');
+  $('#progress-bar').hide();
+}
 
 // Initialize a map and add markers to places we are interested in.
 // Much of the google maps api code is borrowed from Udacity's Google Maps APIs course

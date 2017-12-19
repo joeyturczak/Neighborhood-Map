@@ -207,7 +207,7 @@ var Markers = {
   // Displays marker with provided placeId
   showMarker: function(placeId) {
     var marker = Markers.getMarker(placeId);
-    marker.setMap(map);
+    marker.setVisible(true);
   },
   // Displays all markers
   showAllMarkers: function() {
@@ -222,7 +222,7 @@ var Markers = {
       Markers.infoWindow.close();
       marker.setIcon(Markers.defaultIcon);
     }
-    marker.setMap(null);
+    marker.setVisible(false);
   },
   // Display infoWindow on selected marker
   showInfoWindow: function(marker, placeId) {

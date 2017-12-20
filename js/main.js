@@ -189,7 +189,6 @@ var Markers = {
       Markers.infoWindow = new google.maps.InfoWindow();
     }
     marker.addListener('click', function() {
-      map.panTo(marker.getPosition());
       Markers.showInfoWindow(marker, place.id);
     });
     Markers.markers.push(marker);
@@ -227,6 +226,7 @@ var Markers = {
   },
   // Display infoWindow on selected marker
   showInfoWindow: function(marker, placeId) {
+    map.panTo(marker.getPosition());
     Markers.getFoursquareData(viewModel.getPlaceById(placeId));
     Markers.infoWindow.marker = marker;
     Markers.setInfoWindowContent('<div class="mdc-typography--title infowindow-title">' +

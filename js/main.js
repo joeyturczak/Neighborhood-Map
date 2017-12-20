@@ -228,10 +228,9 @@ var Markers = {
   showInfoWindow: function(marker, placeId) {
     Markers.getFoursquareData(viewModel.getPlaceById(placeId));
     Markers.infoWindow.marker = marker;
-    Markers.infoWindow.setContent('<article class="infowindow">' +
-                                  '<div class="mdc-typography--title infowindow-title">' +
-                                  marker.title + '</div><div class="mdc-typography--subheading1">' +
-                                  'Tips from Foursquare:<ul id="tips"></div></div></article>');
+    Markers.setInfoWindowContent('<div class="mdc-typography--title infowindow-title">' +
+                                 marker.title + '</div><div class="mdc-typography--subheading1">' +
+                                 '</div></div>');
     Markers.infoWindow.open(map, marker);
     Markers.infoWindow.addListener('closeclick', function() {
       marker.setIcon(Markers.defaultIcon);
@@ -239,6 +238,11 @@ var Markers = {
     });
     Markers.toggleHighlight(marker);
     viewModel.toggleFocus(viewModel.getPlaceById(placeId));
+  },
+  setInfoWindowContent: function(contentStr) {
+    Markers.infoWindow.setContent('<article class="infowindow">' +
+                                  contentStr + '</article>');
+                                  // 'Tips from Foursquare:<ul id="tips">
   },
   // Select "place" marker
   selectMarker: function(place) {
@@ -292,32 +296,31 @@ var Markers = {
                 tips.push(data.response.tips.items[i]);
               }
             }
-            addTipsToInfoWindow(tips);
-          },
-          error: function() {
-            foursquareError();
+            addTipsToInfoWindow(venue_id, tips);
           }
         });
-      },
-      error: function() {
-        foursquareError();
       }
     });
 
-    function foursquareError() {
-      $('#tips').html('Failed to connect to Foursquare');
-    }
-
-    function addTipsToInfoWindow(tips) {
+    // Display tips from Foursquare in infowinow
+    function addTipsToInfoWindow(venueId, tips) {
       var $tipElem = $('#tips');
+      var contentStr = "";
+      contentStr += '<div class="mdc-typography--title infowindow-title">' +
+                    '<a href="http://foursquare.com/v/' + venueId + '">' +
+                    place.name() + '</a></div>' +
+                    '<div class="mdc-typography--subheading1">' +
+                    '</div></div>Tips from Foursquare:<ul id="tips">';
       if(tips.length > 0) {
         for(var i = 0; i < tips.length; i++) {
-          $tipElem.append('<li class="mdc-typography--body2">' + tips[i].text) + '</li>';
+          contentStr += '<li class="mdc-typography--body2">' + tips[i].text + '</li>';
         }
+
       } else {
-        $tipElem.html("No tips to display");
+        contentStr += '<li class="mdc-typography--body2">No tips to display</li>';
       }
-      $tipElem.after('<img class="foursquare-logo" src="img/powered-by-foursquare.png" alt="Foursquare logo">')
+      contentStr += '</ul><img class="foursquare-logo" src="img/powered-by-foursquare.png" alt="Foursquare logo">';
+      Markers.setInfoWindowContent(contentStr);
     }
   }
 }

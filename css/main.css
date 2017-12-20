@@ -68,6 +68,15 @@
   }
 }
 
+/* Theme */
+
+:root {
+  --mdc-theme-primary: #ff9800;
+  --mdc-theme-primary-light: #ffb74d;
+  --mdc-theme-primary-dark: #f57c00;
+  --mdc-theme-secondary: #448aff;
+}
+
 /* Commmon */
 
 body,
